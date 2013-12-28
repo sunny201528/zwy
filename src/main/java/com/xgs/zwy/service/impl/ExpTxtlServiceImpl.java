@@ -7,11 +7,16 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.xgs.zwy.dao.CDEntryHeadDao;
+import com.xgs.zwy.dao.CDHeadDao;
 import com.xgs.zwy.domain.CDEntryHead;
-import com.xgs.zwy.domain.CDEntryList;
 import com.xgs.zwy.domain.CDHead;
 import com.xgs.zwy.service.ExpTxtService;
 import com.xgs.zwy.util.ExcelUtils;
+import com.xgs.zwy.vo.CDEntryListVo;
 
 
 /**
@@ -20,13 +25,24 @@ import com.xgs.zwy.util.ExcelUtils;
  * @author n-194
  * 
  */
+@Service
 public  class ExpTxtlServiceImpl implements ExpTxtService {
 
+	@Autowired
+	private CDHeadDao cdHeadDao;
+	@Autowired
+	private CDEntryHeadDao cdEntryHeadDao;
 	private static String DEFAULT_ENCODING = "GBK";
+	
 	@Override
-	public void createExpXml(String inPath, String outPath,CDHead cdHead) throws Exception {
+	public CDHead readExcel(String inPath, CDHead cdHead) throws Exception {
 		cdHead = ExcelUtils.newInstance().readExcel(inPath,cdHead);
-		boolean isImport = false;
+		return cdHead;
+	}
+	
+	@Override
+	public void createExpTxt( String outPath,CDHead cdHead) throws Exception {
+		boolean isImport = false;//是否为进口
 		if("I".equalsIgnoreCase(cdHead.getI_E_Flag())){
 			isImport = true ;
 		}
@@ -40,12 +56,13 @@ public  class ExpTxtlServiceImpl implements ExpTxtService {
 		File bgFile = new File(outPath+File.separator+cdHead.getBillNO()+"bg.txt");
 		List<CDEntryHead> heads = cdHead.getEntryHead();
 		BufferedWriter bgWriter = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(bgFile),DEFAULT_ENCODING));
-	
+		cdHeadDao.saveOrUpdate(cdHead);
 		for (CDEntryHead cdEntryHead : heads) {
 			if(isImport){
 			createCdTxt(cdEntryHead, cdWriter);
 			}
 			createBgTxt(cdEntryHead, bgWriter);
+			cdEntryHeadDao.saveOrUpdate(cdEntryHead);
 		}
 		if(isImport){
 			cdWriter.close();
@@ -56,7 +73,7 @@ public  class ExpTxtlServiceImpl implements ExpTxtService {
 	/** 创建报关单内容 
 	 * @throws IOException */
 	private void createBgTxt(CDEntryHead cdEntryHead,BufferedWriter bgWriter) throws IOException {
-		List<CDEntryList> entryLists = cdEntryHead.getEntryList();
+		List<CDEntryListVo> entryLists = cdEntryHead.getEntryList();
 		bgWriter.append("<ELEMENT             >");
 		bgWriter.newLine();
 		bgWriter.append("<BGDHEAD             >");
@@ -64,7 +81,7 @@ public  class ExpTxtlServiceImpl implements ExpTxtService {
 		bgWriter.newLine();
 		//当为文件类型时 就不产生这行
 		if(1!=cdEntryHead.getEntryType()){
-			for (CDEntryList cdEntryList : entryLists) {
+			for (CDEntryListVo cdEntryList : entryLists) {
 				bgWriter.append("<BGDLIST             >");
 				bgWriter.append(cdEntryList.toString());
 				bgWriter.newLine();
@@ -79,5 +96,7 @@ public  class ExpTxtlServiceImpl implements ExpTxtService {
 		cdWriter.append(cdEntryHead.toCDString());
 		cdWriter.newLine();
 	}
+
+
 
 }

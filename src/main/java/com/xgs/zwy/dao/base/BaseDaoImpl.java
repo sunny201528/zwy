@@ -1,5 +1,6 @@
-package com.xgs.zwy.dao;
+package com.xgs.zwy.dao.base;
 
+import java.io.Serializable;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.Collection;
@@ -11,6 +12,7 @@ import org.hibernate.SessionFactory;
 import org.hibernate.criterion.CriteriaSpecification;
 import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.DetachedCriteria;
+import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.slf4j.Logger;
@@ -18,7 +20,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 
-public class BaseDaoImpl<T> {
+public class BaseDaoImpl<T,PK extends Serializable> implements BaseDao<T, PK >{
 	// 日志输出类
 	protected static final Logger LOGGER = LoggerFactory.getLogger(BaseDaoImpl.class);
 
@@ -38,20 +40,20 @@ public class BaseDaoImpl<T> {
 	 */
 	@Autowired
 	@Qualifier("sessionFactory")
-	private SessionFactory sessionFactory;
+	protected  SessionFactory sessionFactory;
 
 	public Session getSession() {
 		// 事务必须是开启的(Required)，否则获取不到
 		return sessionFactory.getCurrentSession();
 	}
 
-//	/*
-//	 * 保存PO
-//	 */
-//	@SuppressWarnings("unchecked")
-//	public PK save(T entity) {
-//		return (PK) getSession().save(entity);
-//	}
+	/*
+	 * 保存PO
+	 */
+	@SuppressWarnings("unchecked")
+	public PK save(T entity) {
+		return (PK) getSession().save(entity);
+	}
 
 	/*
 	 * 保存或更新PO
@@ -75,13 +77,13 @@ public class BaseDaoImpl<T> {
 		getSession().merge(entity);
 	}
 
-//	/*
-//	 * 根据id删除PO
-//	 */
-//	public void delete(PK id) {
-//		getSession().delete(this.get(id));
-//
-//	}
+	/*
+	 * 根据id删除PO
+	 */
+	public void delete(PK id) {
+		getSession().delete(this.get(id));
+
+	}
 
 	/*
 	 * 删除PO
@@ -90,28 +92,28 @@ public class BaseDaoImpl<T> {
 		getSession().delete(entity);
 	}
 
-//	/*
-//	 * 根据id判断PO是否存在
-//	 */
-//	public boolean exists(PK id) {
-//		return get(id) != null;
-//	}
+	/*
+	 * 根据id判断PO是否存在
+	 */
+	public boolean exists(PK id) {
+		return get(id) != null;
+	}
 
-//	/*
-//	 * 根据id加载PO
-//	 */
-//	@SuppressWarnings("unchecked")
-//	public T load(PK id) {
-//		return (T) getSession().load(this.entityClass, id);
-//	}
+	/*
+	 * 根据id加载PO
+	 */
+	@SuppressWarnings("unchecked")
+	public T load(PK id) {
+		return (T) getSession().load(this.entityClass, id);
+	}
 
-//	/*
-//	 * 根据id获取PO
-//	 */
-//	@SuppressWarnings("unchecked")
-//	public T get(PK id) {
-//		return (T) getSession().get(this.entityClass, id);
-//	}
+	/*
+	 * 根据id获取PO
+	 */
+	@SuppressWarnings("unchecked")
+	public T get(PK id) {
+		return (T) getSession().get(this.entityClass, id);
+	}
 
 	/*
 	 * 获取PO总数(默认为entityClass)
@@ -160,8 +162,7 @@ public class BaseDaoImpl<T> {
 	/*
 	 * 离线查询
 	 */
-	@SuppressWarnings({ "unchecked", "hiding" })
-	public <T> List<T> list(DetachedCriteria criteria) {
+	public List<T> list(DetachedCriteria criteria) {
 		return (List<T>) list(criteria.getExecutableCriteria(getSession()));
 	}
 
@@ -174,16 +175,16 @@ public class BaseDaoImpl<T> {
 	 * 
 	 * @return
 	 */
-//	@SuppressWarnings("unchecked")
-//	public List<T> list(String orderBy, boolean isAsc) {
-//		Criteria criteria = createCriteria();
-//		if (isAsc) {
-//			criteria.addOrder(Order.asc(orderBy));
-//		} else {
-//			criteria.addOrder(Order.desc(orderBy));
-//		}
-//		return criteria.list();
-//	}
+	@SuppressWarnings("unchecked")
+	public List<T> list(String orderBy, boolean isAsc) {
+		Criteria criteria = createCriteria();
+		if (isAsc) {
+			criteria.addOrder(Order.asc(orderBy));
+		} else {
+			criteria.addOrder(Order.desc(orderBy));
+		}
+		return criteria.list();
+	}
 
 	/*
 	 * 按属性查找对象列表，匹配方式为相等

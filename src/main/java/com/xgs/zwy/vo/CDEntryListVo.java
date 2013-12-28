@@ -1,9 +1,9 @@
-package com.xgs.zwy.domain;
+package com.xgs.zwy.vo;
 
+import com.xgs.zwy.domain.CDEntryHead;
+import com.xgs.zwy.domain.CDHead;
 import com.xgs.zwy.util.NumberUtil;
-
-public class CDEntryList {
-	
+public class CDEntryListVo {
 	/**序号*/
 	private int order;
 	/** 商品编号（行邮税号） */
@@ -21,10 +21,8 @@ public class CDEntryList {
 	private String gQty;
 	/** 件数 */
 	private String packNO;
-	
 	private CDEntryHead entryHead;
 	
-
 	public String getgModel() {
 		return gModel;
 	}
@@ -74,7 +72,6 @@ public class CDEntryList {
 	public void setEntryHead(CDEntryHead entryHead) {
 		this.entryHead = entryHead;
 	}
-	
 	public int getOrder() {
 		return order;
 	}

@@ -4,51 +4,84 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
+
 import org.springframework.beans.BeanUtils;
 
 import com.xgs.zwy.constant.Constants;
 import com.xgs.zwy.util.DateUtils;
 import com.xgs.zwy.util.NumberUtil;
 import com.xgs.zwy.util.StringUtil;
+import com.xgs.zwy.vo.CDEntryListVo;
 
-public class CDEntryHead {
+@Entity
+@Table(name="t_CDEntryHead")
+public class CDEntryHead extends BaseDomain{
+	
+	@Id
+	@GeneratedValue(strategy=GenerationType.IDENTITY)
+	private long id;
 	/**分运单号*/
+	@Column
 	private String assBillNO;
 	/** 英文货物名称 商品名称（B类叫：物品名称） */
+	@Column
 	private String gName_en;
 	/**中文货物名称 商品名称（B类叫：物品名称） */
+	@Column
 	private String gName_cn;
 	/** 商品编号（行邮税号） */
+	@Column
 	private String codeTS;	
 	/** 商品规格、型号 */
+	@Column
 	private String gModel;
+	@Column
 	/** 数量 */
 	private String gQty;
+	@Column
 	/** 件数 */
 	private Integer packNO;	
+	@Column
 	/** 重量  */
-	private Double gGrossWt;	
+	private Double gGrossWt;
+	@Column
 	/** 申报总价  */
 	private String declTotal;
+	@Column
 	/** 币制  */
 	private Integer currCode;
 	/** 发件人  */
+	@Column
 	private String sendName;
 	/** 收件人  */
+	@Column
 	private String receiveName;
 	/** 发件人国别  */
+	@Column
 	private Integer sendCountry;	
 	/** 发件人城市  */
+	@Column
 	private String sendCity;
 	/** 	报关类别  */
+	@Column
 	private Integer entryType;//
 	/** 经营单位编号  */
+	@Column
 	private String tradeCO;//	
 	/** 经营单位名称  */
 	private String tradeName;
 	/** 舱单头信息  */
+	@ManyToOne
+	@JoinColumn(name="cdHead_id")
 	private CDHead cdHead;
-	private List<CDEntryList> entryList;
 	public String getAssBillNO() {
 		return assBillNO;
 	}
@@ -96,6 +129,12 @@ public class CDEntryHead {
 	}
 	public void setgGrossWt(Double gGrossWt) {
 		this.gGrossWt = gGrossWt;
+	}
+	public long getId() {
+		return id;
+	}
+	public void setId(long id) {
+		this.id = id;
 	}
 	public String getDeclTotal() {
 		return declTotal;
@@ -192,8 +231,8 @@ public class CDEntryHead {
 		}
 		return total;
 	}
-	public List<CDEntryList> getEntryList() {
-		entryList = new ArrayList<CDEntryList>();
+	public List<CDEntryListVo> getEntryList() {
+		List<CDEntryListVo> entryList = new ArrayList<CDEntryListVo>();
 		String[] names = null;
 		if(this.gName_cn!=null){
 			names = gName_cn.split("\\|");
@@ -222,7 +261,7 @@ public class CDEntryHead {
 		try {
 			
 		for (int i = 0; i < codes.length; i++) {
-			CDEntryList entry = new CDEntryList();
+			CDEntryListVo entry = new CDEntryListVo();
 				BeanUtils.copyProperties(entry, this);
 			entry.setCodeTS(codes[i]);
 			entry.setgName_cn(names[i]);
@@ -230,7 +269,7 @@ public class CDEntryHead {
 			entry.setOrder(i+1);
 			entry.setEntryHead(this);
 			entry.setgGrossWt(wt[i]);
-			entry.setgModel(gModels[i]);;
+			entry.setgModel(gModels[i]);
 			entryList.add(entry);
 		}
 		} catch (Exception e) {

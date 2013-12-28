@@ -4,6 +4,14 @@ import java.text.ParseException;
 import java.util.Date;
 import java.util.List;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
+import javax.persistence.Transient;
+
 import com.xgs.zwy.util.DateUtils;
 import com.xgs.zwy.util.NumberUtil;
 
@@ -13,29 +21,46 @@ import com.xgs.zwy.util.NumberUtil;
  * @author n-194
  *
  */
-public class CDHead {
+@Entity
+@Table(name="t_CDHead")
+public class CDHead  extends BaseDomain{
+	
+	@Id
+	@GeneratedValue(strategy=GenerationType.IDENTITY)
+	private long id;
 	/**	总运单号*/
+	@Column
 	private String billNO;
+	@Column
 	/**运输工具航次(班)号*/
 	private String voyageName;
 	/**运输工具名称*/
 //	private String voyageNO;
 	/**进出口标志*/
+	@Column
 	private String i_E_Flag;
+	@Column
 	/**主单件数*/
 	private long   totalCount;
 	/** 主单重量*/
+	@Column
 	private double totalWT;
 	/**进出口日期*/
+	@Column
 	private Date i_E_Date;
 	/**	起运港(递运港)*/
+	@Column
 	private String destinationPort;
 	/**进出口岸代码*/
+	@Column
 	private String i_E_Port;
 	/**运输方式代码*/
+	@Column
 	private String trafMode;
 	/**导入时间*/
+	@Column
 	private Date importTime = new Date();
+	@Transient
 	private List<CDEntryHead> entryHead;
 	public String getBillNO() {
 		return billNO;
@@ -109,6 +134,12 @@ public class CDHead {
 	}
 	
 	
+public long getId() {
+		return id;
+	}
+	public void setId(long id) {
+		this.id = id;
+	}
 public String getVoyageName() {
 		return voyageName;
 	}

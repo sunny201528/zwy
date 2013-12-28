@@ -414,7 +414,7 @@ public class CDHeadDialog extends JDialog {
 				service = new ExpTxtlServiceImpl();
 				
 				try {
-					service.createExpXml(inPath, outPath, cdHead);
+//					service.createExpXml(inPath, outPath, cdHead);
 					jDialog.dispose();
 					String  msg = "文件输出成功，保存目录为："+outPath+File.separator+billNO+"bg.txt";
 					if("I".equalsIgnoreCase(cdHead.getI_E_Flag())){

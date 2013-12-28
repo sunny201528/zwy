@@ -11,6 +11,7 @@ import com.xgs.zwy.domain.CDHead;
  */
 public interface  ExpTxtService {
 
-	public void createExpXml(String inPath, String outPath,CDHead cdHead) throws Exception;
+	public CDHead readExcel(String inPath,CDHead cdHead) throws Exception;
+	public void createExpTxt( String outPath,CDHead cdHead) throws Exception;
 	
 }
