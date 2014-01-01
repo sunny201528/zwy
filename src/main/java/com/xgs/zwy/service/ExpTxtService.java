@@ -13,5 +13,6 @@ public interface  ExpTxtService {
 
 	public CDHead readExcel(String inPath,CDHead cdHead) throws Exception;
 	public void createExpTxt( String outPath,CDHead cdHead) throws Exception;
+	public void createExpTxt( String inPath,String outPath,CDHead cdHead) throws Exception;
 	
 }

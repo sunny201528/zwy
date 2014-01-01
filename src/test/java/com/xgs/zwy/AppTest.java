@@ -1,10 +1,5 @@
 package com.xgs.zwy;
 
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
-
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
@@ -40,18 +35,18 @@ public class AppTest
     {
         assertTrue( true );
     }
-    private static ApplicationContext ctx; 
+//    private static ApplicationContext ctx; 
     static 
     {  
         //在类路径下寻找resources/beans.xml文件  
-        ctx = new ClassPathXmlApplicationContext("applicationContext.xml");  
+//        ctx = new ClassPathXmlApplicationContext("applicationContext.xml");  
     } 
     public static void main(String[] args) {
     	 //从Spring容器中请求SessionFactory  
-        SessionFactory factory =   
-               (SessionFactory)ctx.getBean("sessionFactory");  
+//        SessionFactory factory =   
+//               (SessionFactory)ctx.getBean("sessionFactory");  
  
-        Session session = factory.openSession();  
+//        Session session = factory.openSession();  
    
         //读取id为1的教师。  
 //        Teacher teacher = (Teacher)session.get(Teacher.class, 1);  
@@ -67,6 +62,6 @@ public class AppTest
 //            System.out.println("未找到！");  
 //        }  
           
-        session.close();
+//        session.close();
 	}
 }

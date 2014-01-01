@@ -7,16 +7,16 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import com.xgs.zwy.dao.CDEntryHeadDao;
 import com.xgs.zwy.dao.CDHeadDao;
+import com.xgs.zwy.dao.impl.CDEntryHeadDaoImpl;
+import com.xgs.zwy.dao.impl.CDHeadDaoImpl;
 import com.xgs.zwy.domain.CDEntryHead;
 import com.xgs.zwy.domain.CDHead;
 import com.xgs.zwy.service.ExpTxtService;
 import com.xgs.zwy.util.ExcelUtils;
 import com.xgs.zwy.vo.CDEntryListVo;
+import com.xgs.zwy.vo.SystemSettingValidate;
 
 
 /**
@@ -25,13 +25,9 @@ import com.xgs.zwy.vo.CDEntryListVo;
  * @author n-194
  * 
  */
-@Service
 public  class ExpTxtlServiceImpl implements ExpTxtService {
 
-	@Autowired
-	private CDHeadDao cdHeadDao;
-	@Autowired
-	private CDEntryHeadDao cdEntryHeadDao;
+	private CDEntryHeadServiceImpl entryHeadService = new CDEntryHeadServiceImpl();
 	private static String DEFAULT_ENCODING = "GBK";
 	
 	@Override
@@ -56,13 +52,24 @@ public  class ExpTxtlServiceImpl implements ExpTxtService {
 		File bgFile = new File(outPath+File.separator+cdHead.getBillNO()+"bg.txt");
 		List<CDEntryHead> heads = cdHead.getEntryHead();
 		BufferedWriter bgWriter = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(bgFile),DEFAULT_ENCODING));
-		cdHeadDao.saveOrUpdate(cdHead);
 		for (CDEntryHead cdEntryHead : heads) {
 			if(isImport){
 			createCdTxt(cdEntryHead, cdWriter);
 			}
+			CDEntryHead cdEntryHead_old = entryHeadService.findByAssBillNO(cdEntryHead.getAssBillNO());
+			if(cdEntryHead_old!=null){
+				if(isImport){
+					cdWriter.close();
+					new File(outPath+File.separator+cdHead.getBillNO()+"cd.txt").delete();
+				}
+				bgWriter.close();
+				bgFile.delete();
+				throw new  RuntimeException("分运单号："+cdEntryHead.getAssBillNO()+" 已经存在！请不要重复导入");
+			}
 			createBgTxt(cdEntryHead, bgWriter);
-			cdEntryHeadDao.saveOrUpdate(cdEntryHead);
+		}
+		for (CDEntryHead cdEntryHead : heads) {
+			entryHeadService.saveOrUpdate(cdEntryHead);
 		}
 		if(isImport){
 			cdWriter.close();
@@ -97,6 +104,14 @@ public  class ExpTxtlServiceImpl implements ExpTxtService {
 		cdWriter.newLine();
 	}
 
+	@Override
+	public void createExpTxt(String inPath, String outPath, CDHead cdHead)
+			throws Exception {
+		
+		cdHead = this.readExcel(inPath, cdHead);
+		this.createExpTxt(outPath, cdHead);
+		
+	}
 
 
 }

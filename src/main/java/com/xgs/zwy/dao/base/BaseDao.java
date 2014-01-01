@@ -12,6 +12,10 @@ public interface BaseDao<T, PK extends Serializable> {
 
 
 	/*
+	 * 保存
+	 */
+	public PK save(T entity) ;
+	/*
 	 * 保存或更新PO
 	 */
 	public void saveOrUpdate(T entity) ;

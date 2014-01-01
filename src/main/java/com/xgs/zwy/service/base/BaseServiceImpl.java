@@ -1,6 +1,7 @@
 package com.xgs.zwy.service.base;
 
 import java.io.Serializable;
+import java.util.List;
 
 import com.xgs.zwy.dao.base.BaseDao;
 
@@ -8,6 +9,11 @@ public class BaseServiceImpl<T, PK extends Serializable> implements BaseService<
 
 	protected  BaseDao<T, PK> baseDao;
 	
+	@Override
+	public void save(T entity) {
+		baseDao.save(entity);
+		
+	}
 	@Override
 	public void saveOrUpdate(T entity) {
 		baseDao.saveOrUpdate(entity);
@@ -48,6 +54,10 @@ public class BaseServiceImpl<T, PK extends Serializable> implements BaseService<
 	@Override
 	public T get(PK id) {
 		return baseDao.get(id);
+	}
+	@Override
+	public List<T> list() {
+		return baseDao.list();
 	}
 
 	public void setBaseDao(BaseDao<T, PK> baseDao) {

@@ -13,7 +13,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
-import org.springframework.beans.BeanUtils;
+import org.apache.commons.beanutils.BeanUtils;
 
 import com.xgs.zwy.constant.Constants;
 import com.xgs.zwy.util.DateUtils;

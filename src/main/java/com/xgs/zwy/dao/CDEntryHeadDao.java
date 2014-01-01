@@ -5,4 +5,5 @@ import com.xgs.zwy.domain.CDEntryHead;
 
 public interface CDEntryHeadDao extends BaseDao<CDEntryHead, Long>{
 
+
 }

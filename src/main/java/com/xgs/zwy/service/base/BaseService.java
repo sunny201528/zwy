@@ -1,8 +1,13 @@
 package com.xgs.zwy.service.base;
 
 import java.io.Serializable;
+import java.util.List;
 
 public interface BaseService<T, PK extends Serializable> {
+	/*
+	 * 保存或更新PO
+	 */
+	public void save(T entity) ;
 	/*
 	 * 保存或更新PO
 	 */
@@ -38,4 +43,5 @@ public interface BaseService<T, PK extends Serializable> {
 	 * 根据id获取PO
 	 */
 	public T get(PK id) ;
+	public List<T> list();
 }

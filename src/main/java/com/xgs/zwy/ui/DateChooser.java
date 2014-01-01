@@ -26,9 +26,8 @@ import java.util.Calendar;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
+
 import javax.swing.BorderFactory;
-import javax.swing.JButton;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.Popup;
@@ -78,9 +77,17 @@ public class DateChooser extends JPanel{
     	select.setTime(initDate);
     	initPanel();
     	initLabel();
+    	
     }
     
-    /**
+    public Calendar getSelect() {
+		return select;
+	}
+	public void setSelect(Calendar select) {
+		this.select = select;
+		commit();
+	}
+	/**
      * 是否允许用户选择
      */
     public void setEnabled(boolean b){

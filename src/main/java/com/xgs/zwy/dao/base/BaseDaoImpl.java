@@ -9,6 +9,7 @@ import java.util.List;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.Transaction;
 import org.hibernate.criterion.CriteriaSpecification;
 import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.DetachedCriteria;
@@ -17,8 +18,8 @@ import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
+
+import com.xgs.zwy.util.HibernateConfigUtils;
 
 public class BaseDaoImpl<T,PK extends Serializable> implements BaseDao<T, PK >{
 	// 日志输出类
@@ -38,13 +39,21 @@ public class BaseDaoImpl<T,PK extends Serializable> implements BaseDao<T, PK >{
 	/*
 	 * 注入sessionFactory
 	 */
-	@Autowired
-	@Qualifier("sessionFactory")
-	protected  SessionFactory sessionFactory;
+	protected  SessionFactory sessionFactory = HibernateConfigUtils.getSessionFactory();
 
 	public Session getSession() {
 		// 事务必须是开启的(Required)，否则获取不到
-		return sessionFactory.getCurrentSession();
+		if(sessionFactory.getCurrentSession()==null){
+			return sessionFactory.openSession();
+		}else{
+			Session session =sessionFactory.getCurrentSession();
+			if(session.isOpen()){
+				return session;
+			}else{
+				return sessionFactory.openSession();
+			}
+		}
+//		return sessionFactory.getCurrentSession();
 	}
 
 	/*
@@ -52,21 +61,35 @@ public class BaseDaoImpl<T,PK extends Serializable> implements BaseDao<T, PK >{
 	 */
 	@SuppressWarnings("unchecked")
 	public PK save(T entity) {
-		return (PK) getSession().save(entity);
+		Session session=getSession();
+		Transaction tx = session.beginTransaction();
+		PK pk =(PK) session.save(entity);
+		tx.commit();
+//		session.close();
+		return pk;
 	}
 
 	/*
 	 * 保存或更新PO
 	 */
 	public void saveOrUpdate(T entity) {
-		getSession().saveOrUpdate(entity);
+		Session session=getSession();
+		Transaction tx = session.beginTransaction();
+		session.saveOrUpdate(entity);
+		tx.commit();
+//		session.close();
+//		getSession().saveOrUpdate(entity);
 	}
 
 	/*
 	 * 更新PO
 	 */
 	public void update(T entity) {
+		Session session=getSession();
+		Transaction tx = session.beginTransaction();
 		getSession().update(entity);
+		tx.commit();
+//		session.close();
 
 	}
 
@@ -74,14 +97,22 @@ public class BaseDaoImpl<T,PK extends Serializable> implements BaseDao<T, PK >{
 	 * 合并PO
 	 */
 	public void merge(T entity) {
+		Session session=getSession();
+		Transaction tx = session.beginTransaction();
 		getSession().merge(entity);
+		tx.commit();
+//		session.close();
 	}
 
 	/*
 	 * 根据id删除PO
 	 */
 	public void delete(PK id) {
-		getSession().delete(this.get(id));
+		Session session=getSession();
+		Transaction tx = session.beginTransaction();
+		session.delete(this.get(id));
+		tx.commit();
+//		session.close();
 
 	}
 
@@ -89,7 +120,11 @@ public class BaseDaoImpl<T,PK extends Serializable> implements BaseDao<T, PK >{
 	 * 删除PO
 	 */
 	public void deleteObject(T entity) {
-		getSession().delete(entity);
+		Session session=getSession();
+		Transaction tx = session.beginTransaction();
+		session.delete(entity);
+		tx.commit();
+//		session.close();
 	}
 
 	/*
@@ -104,7 +139,12 @@ public class BaseDaoImpl<T,PK extends Serializable> implements BaseDao<T, PK >{
 	 */
 	@SuppressWarnings("unchecked")
 	public T load(PK id) {
-		return (T) getSession().load(this.entityClass, id);
+		Session session=getSession();
+		Transaction tx = session.beginTransaction();
+		T t = (T) session.load(this.entityClass, id);
+		tx.commit();
+//		session.close();
+		return t;
 	}
 
 	/*
@@ -112,7 +152,12 @@ public class BaseDaoImpl<T,PK extends Serializable> implements BaseDao<T, PK >{
 	 */
 	@SuppressWarnings("unchecked")
 	public T get(PK id) {
-		return (T) getSession().get(this.entityClass, id);
+		Session session=getSession();
+		Transaction tx = session.beginTransaction();
+		T t = (T) session.get(this.entityClass, id);
+		tx.commit();
+//		session.close();
+		return t;
 	}
 
 	/*
@@ -136,11 +181,15 @@ public class BaseDaoImpl<T,PK extends Serializable> implements BaseDao<T, PK >{
 	 * 删除所有
 	 */
 	public void deleteAll(Collection<?> entities) {
+		Session session=getSession();
+		Transaction tx = session.beginTransaction();
 		if (entities == null)
 			return;
 		for (Object entity : entities) {
 			getSession().delete(entity);
 		}
+		tx.commit();
+//		session.close();
 	}
 
 	/*
@@ -148,7 +197,12 @@ public class BaseDaoImpl<T,PK extends Serializable> implements BaseDao<T, PK >{
 	 */
 	@SuppressWarnings("unchecked")
 	public List<T> list() {
-		return createCriteria().list();
+		Session session=getSession();
+		Transaction tx = session.beginTransaction();
+		List<T>  list =createCriteria().list();
+		tx.commit();
+//		session.close();
+		return list;
 	}
 
 	/*
@@ -156,7 +210,12 @@ public class BaseDaoImpl<T,PK extends Serializable> implements BaseDao<T, PK >{
 	 */
 	@SuppressWarnings("unchecked")
 	public List<T> list(Criteria criteria) {
-		return criteria.list();
+		Session session=getSession();
+		Transaction tx = session.beginTransaction();
+		List<T>  list =criteria.list();
+		tx.commit();
+//		session.close();
+		return list;
 	}
 
 	/*
@@ -236,8 +295,12 @@ public class BaseDaoImpl<T,PK extends Serializable> implements BaseDao<T, PK >{
 	 */
 	@SuppressWarnings("unchecked")
 	public T uniqueResult(String propertyName, Object value) {
+		Session session=getSession();
+		Transaction tx = session.beginTransaction();
 		Criterion criterion = Restrictions.eq(propertyName, value);
-		return (T) createCriteria(criterion).uniqueResult();
+		T t =(T) createCriteria(criterion).uniqueResult();
+		tx.commit();
+		return t;
 	}
 
 	/*
@@ -263,7 +326,11 @@ public class BaseDaoImpl<T,PK extends Serializable> implements BaseDao<T, PK >{
 	 */
 	@SuppressWarnings("unchecked")
 	public T uniqueResult(Criteria criteria) {
-		return (T) criteria.uniqueResult();
+		Session session=getSession();
+		Transaction tx = session.beginTransaction();
+		T t=(T) criteria.uniqueResult();
+		tx.commit();
+		return t;
 	}
 
 	/*
@@ -298,7 +365,9 @@ public class BaseDaoImpl<T,PK extends Serializable> implements BaseDao<T, PK >{
 	 * 创建Criteria实例
 	 */
 	public Criteria createCriteria() {
-		return getSession().createCriteria(entityClass);
+		Session session=getSession();
+		Criteria Criteria =session.createCriteria(entityClass);
+		return Criteria;
 	}
 
 	/*

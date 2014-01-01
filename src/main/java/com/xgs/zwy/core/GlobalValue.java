@@ -14,4 +14,8 @@ public enum GlobalValue {
 	 * 系统设置
 	 */
 	SYSTEMSETTING,
+	/**
+	 * 系统设置
+	 */
+	SESSIONFACTORY,
 }

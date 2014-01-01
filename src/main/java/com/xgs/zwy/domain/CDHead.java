@@ -23,7 +23,7 @@ import com.xgs.zwy.util.NumberUtil;
  */
 @Entity
 @Table(name="t_CDHead")
-public class CDHead  extends BaseDomain{
+public class CDHead  {
 	
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
@@ -35,7 +35,7 @@ public class CDHead  extends BaseDomain{
 	/**运输工具航次(班)号*/
 	private String voyageName;
 	/**运输工具名称*/
-//	private String voyageNO;
+	private String voyageNO;
 	/**进出口标志*/
 	@Column
 	private String i_E_Flag;
@@ -48,7 +48,7 @@ public class CDHead  extends BaseDomain{
 	/**进出口日期*/
 	@Column
 	private Date i_E_Date;
-	/**	起运港(递运港)*/
+	/**	起运港(抵运港)*/
 	@Column
 	private String destinationPort;
 	/**进出口岸代码*/
@@ -152,8 +152,8 @@ public String getVoyageNO(){
 	}
 	public String toCDString() {
 		return billNO+"||"+getVoyageNO()+"||"+i_E_Flag+"||||||"+totalWT+
-				"||"+NumberUtil.df.format(totalCount)+"||"+entryHead.size()+"||"+trafMode+"||"+DateUtils.SIMPLE_TIME_DF.format(i_E_Date)+"||"+i_E_Port+
-				"||"+destinationPort;
+				"||"+NumberUtil.df.format(totalCount)+"||"+entryHead.size()+"||"+trafMode+"||"+DateUtils.SIMPLE_TIME_DF.format(i_E_Date)+"||"+destinationPort+
+				"||"+ i_E_Port;
 	}
 	
 }

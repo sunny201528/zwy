@@ -18,6 +18,10 @@ public class SystemSetting {
 	 * 文件的输出目录
 	 */
 	private String outPath;
+	/**
+	 * 文件的输入目录
+	 */
+	private String inPath;
 	public int getId() {
 		return id;
 	}
@@ -29,6 +33,12 @@ public class SystemSetting {
 	}
 	public void setOutPath(String outPath) {
 		this.outPath = outPath;
+	}
+	public String getInPath() {
+		return inPath;
+	}
+	public void setInPath(String inPath) {
+		this.inPath = inPath;
 	}
 	
 	

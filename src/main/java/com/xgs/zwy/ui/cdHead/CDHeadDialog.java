@@ -1,6 +1,6 @@
-package com.xgs.zwy.ui;
+package com.xgs.zwy.ui.cdHead;
 
-import java.io.File;
+import java.util.Calendar;
 import java.util.Date;
 
 import javax.swing.JDialog;
@@ -8,12 +8,12 @@ import javax.swing.JOptionPane;
 
 import com.xgs.zwy.constant.Constants;
 import com.xgs.zwy.domain.CDHead;
-import com.xgs.zwy.service.ExpTxtService;
-import com.xgs.zwy.service.impl.ExpTxtlServiceImpl;
+import com.xgs.zwy.service.CDHeadService;
+import com.xgs.zwy.service.impl.CDHeadServiceImpl;
+import com.xgs.zwy.ui.DateChooser;
 import com.xgs.zwy.util.ConstantUtils;
 import com.xgs.zwy.util.DataValidator;
 import com.xgs.zwy.vo.Item;
-
 
 public class CDHeadDialog extends JDialog {
 
@@ -21,7 +21,35 @@ public class CDHeadDialog extends JDialog {
 	 * 
 	 */
 	private static final long serialVersionUID = -7118404032443794000L;
-	public CDHeadDialog(final String inPath,final String outPath){
+	public CDHeadDialog(CDHead head,CDheadList cDheadList){
+		this.cdHead = head;
+		this.cDheadList =cDheadList;
+		initComponents();
+		
+	}
+	private void initValue(CDHead head) {
+		if(cdHead!=null){
+			dialog_Button3.setText("修改");
+			totalWT_TextField.setText(cdHead.getTotalWT()+"");;
+			 i_E_Port_TextField.setText(cdHead.getI_E_Port());;
+			destinationPort_TextField.setText(cdHead.getDestinationPort());;
+			 billNO_TextField.setText(cdHead.getBillNO());;
+			 voyageName_TextField.setText(cdHead.getVoyageName());;
+			 totalCount_TextField.setText(cdHead.getTotalCount()+"");
+			i_E_Flag_ComboBox.setSelectedItem(new Item<String, String>(cdHead.getI_E_Flag(),Constants.I_E_FLAG.get(cdHead.getI_E_Flag())));
+			Calendar calendar = Calendar.getInstance();
+			calendar.setTime(cdHead.getI_E_Date());
+			i_E_Date_mp.setSelect(calendar);
+			trafMode_ComboBox.setSelectedItem(new Item<String, String>(cdHead.getTrafMode(),Constants.TRAFMODE.get(cdHead.getTrafMode())));
+		}
+	}
+	public CDHeadDialog(CDheadList cDheadList){
+		this.cDheadList =cDheadList;
+		initComponents();
+	}
+	
+	private void initComponents() {
+
 
 		jDialog = new javax.swing.JDialog(this);
 		dialog_Panel = new javax.swing.JPanel();
@@ -338,95 +366,12 @@ public class CDHeadDialog extends JDialog {
 																javax.swing.GroupLayout.PREFERRED_SIZE))
 										.addContainerGap(33, Short.MAX_VALUE)));
 
-		dialog_Button3.setText("确定");
+		dialog_Button3.setText("添加");
 		dialog_Button3.addActionListener(new java.awt.event.ActionListener() {
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				System.out.println("调用方法");
-				/** 总运单号 */
-				String billNO = billNO_TextField.getText();
-				if(DataValidator.isNull(billNO)){
-					JOptionPane.showMessageDialog(null, "总运单号 必须填写", "提示信息！",
-							JOptionPane.ERROR_MESSAGE);
-					return;
-				}
-				/** 运输工具名称 */
-				String voyageName = voyageName_TextField.getText();
+		
+				addOrUpdate();
 				
-				if(DataValidator.isNull(voyageName)){
-					JOptionPane.showMessageDialog(null, "运输工具名称必须填写", "提示信息！",
-							JOptionPane.ERROR_MESSAGE);
-					return;
-				}
-				Item item = (Item) i_E_Flag_ComboBox.getSelectedItem();
-				if(DataValidator.isNull(item)||DataValidator.isNull(item.getKey())){
-					JOptionPane.showMessageDialog(null, "进出口标志必须选择", "提示信息！",
-							JOptionPane.ERROR_MESSAGE);
-					return;
-				}
-				/** 进出口标志 */
-				String i_E_Flag = item.getKey().toString();
-				/** 主单件数 */
-				if(DataValidator.isNull(totalCount_TextField.getText())){
-					JOptionPane.showMessageDialog(null, "主单件数 必须填写", "提示信息！",
-							JOptionPane.ERROR_MESSAGE);
-					return;
-				}
-				long totalCount = Long.valueOf(totalCount_TextField.getText());
-				/** 主单重量 */
-				if(DataValidator.isNull(totalWT_TextField.getText())){
-					JOptionPane.showMessageDialog(null, "主单重量必须填写", "提示信息！",
-							JOptionPane.ERROR_MESSAGE);
-					return;
-				}
-				double totalWT = Double.valueOf(totalWT_TextField.getText());
-				/** 进出口日期 */
-				Date i_E_Date = i_E_Date_mp.getDate();
-				/** 进出口岸代码 */
-				String i_E_Port = i_E_Port_TextField.getText();
-				if(DataValidator.isNull(i_E_Port)){
-					JOptionPane.showMessageDialog(null, "进出口岸代码必须填写", "提示信息！",
-							JOptionPane.ERROR_MESSAGE);
-					return;
-				}
-				/** 起运港(递运港) */
-				String destinationPort = destinationPort_TextField.getText();
-				if(DataValidator.isNull(destinationPort)){
-					JOptionPane.showMessageDialog(null, "起运港(递运港)必须填写", "提示信息！",
-							JOptionPane.ERROR_MESSAGE);
-					return;
-				}
-				/** 运输方式代码 */
-				String trafMode = ((Item) trafMode_ComboBox.getSelectedItem())
-						.getKey().toString();
-
-				cdHead = new CDHead();
-				cdHead.setBillNO(billNO);
-				cdHead.setDestinationPort(destinationPort);
-				cdHead.setI_E_Date(i_E_Date);
-				cdHead.setI_E_Flag(i_E_Flag);
-				cdHead.setI_E_Port(i_E_Port);
-				cdHead.setTotalCount(totalCount);
-				cdHead.setTotalWT(totalWT);
-				cdHead.setTrafMode(trafMode);
-				cdHead.setVoyageName(voyageName);
-				ExpTxtService service = null;
-				
-				service = new ExpTxtlServiceImpl();
-				
-				try {
-//					service.createExpXml(inPath, outPath, cdHead);
-					jDialog.dispose();
-					String  msg = "文件输出成功，保存目录为："+outPath+File.separator+billNO+"bg.txt";
-					if("I".equalsIgnoreCase(cdHead.getI_E_Flag())){
-						 msg = msg+"和 "+billNO+"cd.txt";
-					}
-					 JOptionPane.showMessageDialog(null,msg,"提示信息！",JOptionPane.INFORMATION_MESSAGE);
-
-				} catch (Exception ex) {
-					JOptionPane.showMessageDialog(null, ex.getMessage(),
-							"对不起，出错了！", JOptionPane.ERROR_MESSAGE);
-					ex.printStackTrace();
-				}
 			}
 		});
 
@@ -517,10 +462,109 @@ public class CDHeadDialog extends JDialog {
 				Short.MAX_VALUE));
 		setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 		setTitle("舱单信息");
+		initValue(cdHead);
 		jDialog.pack();
 		jDialog.setVisible(true);
-	}
 	
+		
+	}
+	protected void addOrUpdate() {
+		/** 总运单号 */
+		String billNO = billNO_TextField.getText();
+		if(DataValidator.isNull(billNO)){
+			JOptionPane.showMessageDialog(null, "总运单号 必须填写", "提示信息！",
+					JOptionPane.ERROR_MESSAGE);
+			return;
+		}
+		/** 运输工具名称 */
+		String voyageName = voyageName_TextField.getText();
+		
+		if(DataValidator.isNull(voyageName)){
+			JOptionPane.showMessageDialog(null, "运输工具名称必须填写", "提示信息！",
+					JOptionPane.ERROR_MESSAGE);
+			return;
+		}
+		Item item = (Item) i_E_Flag_ComboBox.getSelectedItem();
+		if(DataValidator.isNull(item)||DataValidator.isNull(item.getKey())){
+			JOptionPane.showMessageDialog(null, "进出口标志必须选择", "提示信息！",
+					JOptionPane.ERROR_MESSAGE);
+			return;
+		}
+		/** 进出口标志 */
+		String i_E_Flag = item.getKey().toString();
+		/** 主单件数 */
+		if(DataValidator.isNull(totalCount_TextField.getText())){
+			JOptionPane.showMessageDialog(null, "主单件数 必须填写", "提示信息！",
+					JOptionPane.ERROR_MESSAGE);
+			return;
+		}
+		long totalCount = Long.valueOf(totalCount_TextField.getText());
+		/** 主单重量 */
+		if(DataValidator.isNull(totalWT_TextField.getText())){
+			JOptionPane.showMessageDialog(null, "主单重量必须填写", "提示信息！",
+					JOptionPane.ERROR_MESSAGE);
+			return;
+		}
+		double totalWT = Double.valueOf(totalWT_TextField.getText());
+		/** 进出口日期 */
+		Date i_E_Date = i_E_Date_mp.getDate();
+		/** 进出口岸代码 */
+		String i_E_Port = i_E_Port_TextField.getText();
+		if(DataValidator.isNull(i_E_Port)){
+			JOptionPane.showMessageDialog(null, "进出口岸代码必须填写", "提示信息！",
+					JOptionPane.ERROR_MESSAGE);
+			return;
+		}
+		/** 起运港(递运港) */
+		String destinationPort = destinationPort_TextField.getText();
+		if(DataValidator.isNull(destinationPort)){
+			JOptionPane.showMessageDialog(null, "起运港(递运港)必须填写", "提示信息！",
+					JOptionPane.ERROR_MESSAGE);
+			return;
+		}
+		/** 运输方式代码 */
+		String trafMode = ((Item) trafMode_ComboBox.getSelectedItem())
+				.getKey().toString();
+	if(cdHead==null){
+		cdHead = new CDHead();
+	}
+		cdHead.setBillNO(billNO);
+		cdHead.setDestinationPort(destinationPort);
+		cdHead.setI_E_Date(i_E_Date);
+		cdHead.setI_E_Flag(i_E_Flag);
+		cdHead.setI_E_Port(i_E_Port);
+		cdHead.setTotalCount(totalCount);
+		cdHead.setTotalWT(totalWT);
+		cdHead.setTrafMode(trafMode);
+		cdHead.setVoyageName(voyageName);
+		
+		
+		if(cdHead.getId()>0){
+			service.update(cdHead);
+			jDialog.dispose();
+			cDheadList.initData();
+		}else{
+			CDHead oldCDHead = service.findByBillNO(cdHead.getBillNO());
+			if(oldCDHead==null){
+				service.save(cdHead);
+				jDialog.dispose();
+				cDheadList.initData();
+			}else{
+				JOptionPane.showMessageDialog(null,"你要添加的运单已经存在，请不要重复添加！","提示信息！",JOptionPane.WARNING_MESSAGE);
+			}
+
+		}
+		try {
+//			service.createExpXml(inPath, outPath, cdHead);
+		
+
+		} catch (Exception ex) {
+			JOptionPane.showMessageDialog(null, ex.getMessage(),
+					"对不起，出错了！", JOptionPane.ERROR_MESSAGE);
+			ex.printStackTrace();
+		}
+		
+	}
 	private javax.swing.JButton dialog_Button3;
 	private javax.swing.JButton dialog_Button4;
 	private javax.swing.JComboBox i_E_Flag_ComboBox;
@@ -545,8 +589,9 @@ public class CDHeadDialog extends JDialog {
 	private JDialog jDialog;
 
 	private CDHead cdHead;
-	
+	private CDheadList cDheadList;
+	private CDHeadService service = new CDHeadServiceImpl();
 	public static void main(String[] args) {
-		new CDHeadDialog(null, null);
+//		new CDHeadDialog(null, null);
 	}
 }
