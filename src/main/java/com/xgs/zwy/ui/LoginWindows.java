@@ -4,6 +4,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 
 import com.xgs.zwy.ui.main.mainFrame;
 
@@ -38,7 +39,7 @@ public class LoginWindows extends JFrame {
 					new mainFrame().setVisible(true);;
 //					if("sinoair".equals(accountStr)&&"ljr2006511".equals(pwdStr)){
 //						dispose();
-//						new MainWindows();
+//						new mainFrame().setVisible(true);
 //					
 //					}else{
 //						JOptionPane.showMessageDialog(null, "账号或密码错误！", "提示信息！",
