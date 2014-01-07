@@ -14,17 +14,17 @@ public class SystemSettingValidate {
 			list.add("没有进行全局设置！请设置后保存！");
 			return list;
 		}
-		String inPath =systemSetting.getInPath();
-		if(inPath==null||inPath.trim().trim().equals("")){
-			list.add("文件的输入路径没有配置！请设置！");
-			return list;
-		}
+//		String inPath =systemSetting.getInPath();
+//		if(inPath==null||inPath.trim().trim().equals("")){
+//			list.add("文件的输入路径没有配置！请设置！");
+//			return list;
+//		}
 	String outPath = systemSetting.getOutPath();
 	if(outPath==null||outPath.trim().trim().equals("")){
 			list.add("文件的输出路径没有配置！请设置！");
 			return list;
 		}
-	isOk(inPath, list, true);
+//	isOk(inPath, list, true);
 	isOk(outPath, list, false);
 	
 	return list;
@@ -66,9 +66,9 @@ public class SystemSettingValidate {
 	}
 public static String getInputPath(SystemSetting systemSetting){
 	List< String> list = validateSystemSetting(systemSetting);
-	if(list.size()==0){
-		return new File(systemSetting.getInPath()).listFiles()[0].getAbsolutePath();
-	}
+//	if(list.size()==0){
+//		return new File(systemSetting.getInPath()).listFiles()[0].getAbsolutePath();
+//	}
 	return "";
 }
 }

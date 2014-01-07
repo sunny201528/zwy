@@ -2,19 +2,10 @@ package com.xgs.zwy.domain;
 
 import java.util.Date;
 
-import javax.persistence.Column;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-
 public class BaseDomain {
 
-	@Id
-	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private long id;
-	@Column
 	private Date createDate;
-	@Column
 	private Date updateDate;
 
 	public long getId() {

@@ -1,6 +1,5 @@
 package com.xgs.zwy.ui.cdHead;
 
-import java.util.Calendar;
 import java.util.Date;
 
 import javax.swing.JDialog;
@@ -8,8 +7,7 @@ import javax.swing.JOptionPane;
 
 import com.xgs.zwy.constant.Constants;
 import com.xgs.zwy.domain.CDHead;
-import com.xgs.zwy.service.CDHeadService;
-import com.xgs.zwy.service.impl.CDHeadServiceImpl;
+import com.xgs.zwy.service.impl.ExpTxtlServiceImpl;
 import com.xgs.zwy.ui.DateChooser;
 import com.xgs.zwy.util.ConstantUtils;
 import com.xgs.zwy.util.DataValidator;
@@ -21,32 +19,28 @@ public class CDHeadDialog extends JDialog {
 	 * 
 	 */
 	private static final long serialVersionUID = -7118404032443794000L;
-	public CDHeadDialog(CDHead head,CDheadList cDheadList){
-		this.cdHead = head;
-		this.cDheadList =cDheadList;
+	public CDHeadDialog(String inPath,String outPath){
+		this.inPath = inPath;
+		this.outPath =outPath;
 		initComponents();
 		
 	}
-	private void initValue(CDHead head) {
-		if(cdHead!=null){
-			dialog_Button3.setText("修改");
-			totalWT_TextField.setText(cdHead.getTotalWT()+"");;
-			 i_E_Port_TextField.setText(cdHead.getI_E_Port());;
-			destinationPort_TextField.setText(cdHead.getDestinationPort());;
-			 billNO_TextField.setText(cdHead.getBillNO());;
-			 voyageName_TextField.setText(cdHead.getVoyageName());;
-			 totalCount_TextField.setText(cdHead.getTotalCount()+"");
-			i_E_Flag_ComboBox.setSelectedItem(new Item<String, String>(cdHead.getI_E_Flag(),Constants.I_E_FLAG.get(cdHead.getI_E_Flag())));
-			Calendar calendar = Calendar.getInstance();
-			calendar.setTime(cdHead.getI_E_Date());
-			i_E_Date_mp.setSelect(calendar);
-			trafMode_ComboBox.setSelectedItem(new Item<String, String>(cdHead.getTrafMode(),Constants.TRAFMODE.get(cdHead.getTrafMode())));
-		}
-	}
-	public CDHeadDialog(CDheadList cDheadList){
-		this.cDheadList =cDheadList;
-		initComponents();
-	}
+//	private void initValue(CDHead head) {
+//		if(cdHead!=null){
+//			dialog_Button3.setText("修改");
+//			totalWT_TextField.setText(cdHead.getTotalWT()+"");;
+//			 i_E_Port_TextField.setText(cdHead.getI_E_Port());;
+//			destinationPort_TextField.setText(cdHead.getDestinationPort());;
+//			 billNO_TextField.setText(cdHead.getBillNO());;
+//			 voyageName_TextField.setText(cdHead.getVoyageName());;
+//			 totalCount_TextField.setText(cdHead.getTotalCount()+"");
+//			i_E_Flag_ComboBox.setSelectedItem(new Item<String, String>(cdHead.getI_E_Flag(),Constants.I_E_FLAG.get(cdHead.getI_E_Flag())));
+//			Calendar calendar = Calendar.getInstance();
+//			calendar.setTime(cdHead.getI_E_Date());
+//			i_E_Date_mp.setSelect(calendar);
+//			trafMode_ComboBox.setSelectedItem(new Item<String, String>(cdHead.getTrafMode(),Constants.TRAFMODE.get(cdHead.getTrafMode())));
+//		}
+//	}
 	
 	private void initComponents() {
 
@@ -366,7 +360,7 @@ public class CDHeadDialog extends JDialog {
 																javax.swing.GroupLayout.PREFERRED_SIZE))
 										.addContainerGap(33, Short.MAX_VALUE)));
 
-		dialog_Button3.setText("添加");
+		dialog_Button3.setText("转换");
 		dialog_Button3.addActionListener(new java.awt.event.ActionListener() {
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
 		
@@ -462,7 +456,7 @@ public class CDHeadDialog extends JDialog {
 				Short.MAX_VALUE));
 		setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 		setTitle("舱单信息");
-		initValue(cdHead);
+//		initValue(cdHead);
 		jDialog.pack();
 		jDialog.setVisible(true);
 	
@@ -539,23 +533,11 @@ public class CDHeadDialog extends JDialog {
 		cdHead.setVoyageName(voyageName);
 		
 		
-		if(cdHead.getId()>0){
-			service.update(cdHead);
-			jDialog.dispose();
-			cDheadList.initData();
-		}else{
-			CDHead oldCDHead = service.findByBillNO(cdHead.getBillNO());
-			if(oldCDHead==null){
-				service.save(cdHead);
-				jDialog.dispose();
-				cDheadList.initData();
-			}else{
-				JOptionPane.showMessageDialog(null,"你要添加的运单已经存在，请不要重复添加！","提示信息！",JOptionPane.WARNING_MESSAGE);
-			}
-
-		}
 		try {
-//			service.createExpXml(inPath, outPath, cdHead);
+			new ExpTxtlServiceImpl().createExpTxt(inPath, outPath, cdHead);
+			JOptionPane.showMessageDialog(null, "转换成功！",
+					"提示！", JOptionPane.INFORMATION_MESSAGE);
+			jDialog.dispose();
 		
 
 		} catch (Exception ex) {
@@ -587,10 +569,10 @@ public class CDHeadDialog extends JDialog {
 	private javax.swing.JTextField voyageName_TextField;
 	private javax.swing.JTextField totalCount_TextField;
 	private JDialog jDialog;
-
+private String inPath;
+private String outPath;
 	private CDHead cdHead;
-	private CDheadList cDheadList;
-	private CDHeadService service = new CDHeadServiceImpl();
+//	private CDheadList cDheadList;
 	public static void main(String[] args) {
 //		new CDHeadDialog(null, null);
 	}

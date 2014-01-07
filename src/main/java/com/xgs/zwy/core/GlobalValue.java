@@ -5,17 +5,21 @@ package com.xgs.zwy.core;
  * @author n-194
  *
  */
-public enum GlobalValue {
+public interface GlobalValue {
 	/**
 	 * 文件的输出路劲
 	 */
-//	OUPUTPATH,
+	public static final String OUT_PATH = "outPath";
 	/**
-	 * 系统设置
+	 * 文件的输入路劲
 	 */
-	SYSTEMSETTING,
-	/**
-	 * 系统设置
-	 */
-	SESSIONFACTORY,
+	public static final String IN_PATH = "inPath";
+//	/**
+//	 * 系统设置
+//	 */
+//	SYSTEMSETTING,
+//	/**
+//	 * 系统设置
+//	 */
+//	SESSIONFACTORY,
 }

@@ -11,8 +11,7 @@ import javax.swing.JTextField;
 
 import com.xgs.zwy.base.ThreadLocalVariable;
 import com.xgs.zwy.domain.SystemSetting;
-import com.xgs.zwy.service.SystemSettingService;
-import com.xgs.zwy.service.impl.SystemSettingServiceImpl;
+import com.xgs.zwy.util.PropertiesUtil;
 
 /**
  * 系统配置面板
@@ -24,16 +23,15 @@ public class SystemSettingPanel extends JPanel {
 	 * 
 	 */
 	private static final long serialVersionUID = 540063687222333073L;
-	private javax.swing.JButton inSelectFilePathBnt;
-    private javax.swing.JTextField inputPath1;
-    private javax.swing.JLabel inputPathLable;
+//	private javax.swing.JButton inSelectFilePathBnt;
+//    private javax.swing.JTextField inputPath1;
+//    private javax.swing.JLabel inputPathLable;
     private javax.swing.JTextField outputPath;
     private javax.swing.JLabel outputPathLable;
     private javax.swing.JButton saveButton;
     private javax.swing.JButton selectFilePathBnt;
 private JFileChooser fileChooser = null;
 
-private SystemSettingService systemSettingService = new SystemSettingServiceImpl();
 	public SystemSettingPanel(){
 		init();
 	}
@@ -44,9 +42,9 @@ private SystemSettingService systemSettingService = new SystemSettingServiceImpl
         outputPath = new javax.swing.JTextField();
         selectFilePathBnt = new javax.swing.JButton();
         saveButton = new javax.swing.JButton();
-        inputPathLable = new javax.swing.JLabel();
-        inputPath1 = new javax.swing.JTextField();
-        inSelectFilePathBnt = new javax.swing.JButton();
+//        inputPathLable = new javax.swing.JLabel();
+//        inputPath1 = new javax.swing.JTextField();
+//        inSelectFilePathBnt = new javax.swing.JButton();
 
         outputPathLable.setText("文件输出目录：");
 
@@ -63,16 +61,16 @@ private SystemSettingService systemSettingService = new SystemSettingServiceImpl
             	saveButtonActionPerformed(evt);
             }
         });
-        inputPathLable.setText("文件输入目录：");
-
-
-        inSelectFilePathBnt.setText("选择");
-        initValue(ThreadLocalVariable.getSystemSetting());
-        inSelectFilePathBnt.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                inSelectFilePathBntActionPerformed(evt);
-            }
-        });
+//        inputPathLable.setText("文件输入目录：");
+//
+//
+//        inSelectFilePathBnt.setText("选择");
+//        initValue(ThreadLocalVariable.getSystemSetting());
+//        inSelectFilePathBnt.addActionListener(new java.awt.event.ActionListener() {
+//            public void actionPerformed(java.awt.event.ActionEvent evt) {
+//                inSelectFilePathBntActionPerformed(evt);
+//            }
+//        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -84,46 +82,31 @@ private SystemSettingService systemSettingService = new SystemSettingServiceImpl
                 .addGap(90, 90, 90))
             .addGroup(layout.createSequentialGroup()
                 .addGap(39, 39, 39)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(inputPathLable)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(inputPath1, javax.swing.GroupLayout.PREFERRED_SIZE, 179, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(inSelectFilePathBnt))
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(outputPathLable)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(outputPath, javax.swing.GroupLayout.PREFERRED_SIZE, 179, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(selectFilePathBnt))
-                    .addGroup(layout.createSequentialGroup()))
+                .addComponent(outputPathLable)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(outputPath, javax.swing.GroupLayout.PREFERRED_SIZE, 179, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(selectFilePathBnt)
                 .addContainerGap(75, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(58, 58, 58)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(inputPathLable)
-                    .addComponent(inputPath1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(inSelectFilePathBnt))
-                .addGap(18, 18, 18)
+                .addGap(95, 95, 95)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(outputPathLable)
                     .addComponent(outputPath, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(selectFilePathBnt))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 138, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 142, Short.MAX_VALUE)
                 .addComponent(saveButton)
                 .addGap(90, 90, 90))
         );
-   
 		
 	}
-	protected void inSelectFilePathBntActionPerformed(ActionEvent evt) {
-		getfilePath2Text(fileChooser,inputPath1);
-		
-	}
+//	protected void inSelectFilePathBntActionPerformed(ActionEvent evt) {
+//		getfilePath2Text(fileChooser,inputPath1);
+//		
+//	}
 
 	protected void selectFilePathBntActionPerformed(ActionEvent evt) {
 		getfilePath2Text(fileChooser,outputPath);
@@ -146,11 +129,11 @@ private SystemSettingService systemSettingService = new SystemSettingServiceImpl
 
 	
 	protected void saveButtonActionPerformed(ActionEvent evt) {
-		if (inputPath1==null||inputPath1.getText()==null||inputPath1.getText().trim().equals("")) {
-			JOptionPane.showMessageDialog(null, "请选择输入文件的路径！", "提示信息！",
-					JOptionPane.ERROR_MESSAGE);
-			return;
-		}
+//		if (inputPath1==null||inputPath1.getText()==null||inputPath1.getText().trim().equals("")) {
+//			JOptionPane.showMessageDialog(null, "请选择输入文件的路径！", "提示信息！",
+//					JOptionPane.ERROR_MESSAGE);
+//			return;
+//		}
 		if (outputPath==null||outputPath.getText()==null||outputPath.getText().trim().equals("")) {
 			JOptionPane.showMessageDialog(null, "请选择输出文件的路径！", "提示信息！",
 					JOptionPane.ERROR_MESSAGE);
@@ -158,11 +141,10 @@ private SystemSettingService systemSettingService = new SystemSettingServiceImpl
 		}
 		SystemSetting systemSetting =new SystemSetting();
 		systemSetting.setOutPath(outputPath.getText().trim());
-		systemSetting.setInPath(inputPath1.getText().trim());
+//		systemSetting.setInPath(inputPath1.getText().trim());
 		
 		try {
-			systemSettingService.saveOrUpdate(systemSetting);
-			ThreadLocalVariable.setSystemSetting(systemSetting);
+			PropertiesUtil.updateSystemSetting(systemSetting);
 			JOptionPane.showMessageDialog(null, "保存成功了！", "提示信息！",
 					JOptionPane.INFORMATION_MESSAGE);
 		} catch (Exception e) {
@@ -176,7 +158,7 @@ private SystemSettingService systemSettingService = new SystemSettingServiceImpl
 	public void initValue(SystemSetting setting){
 		if(setting!=null){
 			outputPath.setText(setting.getOutPath());
-			inputPath1.setText(setting.getInPath());
+//			inputPath1.setText(setting.getInPath());
 		}
 	}
 	public static void main(String[] args) {

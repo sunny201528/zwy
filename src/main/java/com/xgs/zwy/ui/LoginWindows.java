@@ -6,7 +6,7 @@ import java.awt.event.ActionListener;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
-import com.xgs.zwy.ui.main.mainFrame;
+import com.xgs.zwy.ui.main.MainFrame;
 
 public class LoginWindows extends JFrame {
 
@@ -34,17 +34,17 @@ public class LoginWindows extends JFrame {
 				public void actionPerformed(ActionEvent e) {
 					String accountStr = accuont.getText();
 					String pwdStr = pwd.getText();
-					dispose();
-				
-					new mainFrame().setVisible(true);;
-//					if("sinoair".equals(accountStr)&&"ljr2006511".equals(pwdStr)){
-//						dispose();
-//						new mainFrame().setVisible(true);
-//					
-//					}else{
-//						JOptionPane.showMessageDialog(null, "账号或密码错误！", "提示信息！",
-//								JOptionPane.ERROR_MESSAGE);
-//					}
+//					dispose();
+//				
+//					new mainFrame().setVisible(true);;
+					if("sinoair".equals(accountStr)&&"ljr2006511".equals(pwdStr)){
+						dispose();
+						new MainFrame().setVisible(true);
+					
+					}else{
+						JOptionPane.showMessageDialog(null, "账号或密码错误！", "提示信息！",
+								JOptionPane.ERROR_MESSAGE);
+					}
 					
 				}
 			});

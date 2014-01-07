@@ -4,7 +4,7 @@
 
   <groupId>com.xgs</groupId>
   <artifactId>zwy</artifactId>
-  <version>0.0.1-SNAPSHOT</version>
+  <version>0.0.2-SNAPSHOT</version>
   <packaging>jar</packaging>
 
   <name>zwy</name>
@@ -63,12 +63,7 @@
 	<version>${aspectj.version}</version>
 </dependency>
 -->
-<!-- hibernate 依赖包 -->
-  <dependency>
-	<groupId>org.hibernate</groupId>
-	<artifactId>hibernate-core</artifactId>
-	<version>${hibernate.version}</version>
-</dependency>
+
  <!-- poi 依赖包 -->
    <dependency>
 	<groupId>org.apache.poi</groupId>
@@ -82,19 +77,9 @@
 	<version>${poi.version}</version>
 </dependency>
 
-  <!-- 数据库连接池 -->                                      
-<dependency>
-	<groupId>c3p0</groupId>
-	<artifactId>c3p0</artifactId>
-	<version>${c3p0.version}</version>
-</dependency>
 
-<!-- mysql jdbc -->
- <dependency>
-	<groupId>mysql</groupId>
-	<artifactId>mysql-connector-java</artifactId>
-	<version>${jdbc-mysql.version}</version>
-</dependency>
+
+
 
     <!-- 日志 -->    
     <dependency>
@@ -135,7 +120,7 @@
                 <configuration>  
                     <archive>  
                         <manifest>  
-                            <mainClass>com.xgs.zwy.ui.main.mainFrame</mainClass>  
+                            <mainClass>com.xgs.zwy.ui.main.MainFrame</mainClass>  
                         </manifest>  
                     </archive>  
                     <descriptorRefs>  

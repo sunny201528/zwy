@@ -9,20 +9,19 @@ import javax.swing.JOptionPane;
 
 import com.xgs.zwy.base.ThreadLocalVariable;
 import com.xgs.zwy.domain.SystemSetting;
-import com.xgs.zwy.service.SystemSettingService;
-import com.xgs.zwy.service.impl.SystemSettingServiceImpl;
 import com.xgs.zwy.ui.JProgressBarTest;
 import com.xgs.zwy.ui.LoginWindows;
 import com.xgs.zwy.ui.SystemSettingPanel;
+import com.xgs.zwy.ui.TransformPanel;
 import com.xgs.zwy.ui.cdHead.CDheadList;
 import com.xgs.zwy.ui.cdHeadEntry.CDEntryHeadPanel;
-import com.xgs.zwy.util.HibernateConfigUtils;
+import com.xgs.zwy.util.PropertiesUtil;
 
         /**
          *
          * @author n-194
          */
-        public class mainFrame extends javax.swing.JFrame {
+        public class MainFrame extends javax.swing.JFrame {
 
             /**
 			 * 
@@ -31,7 +30,7 @@ import com.xgs.zwy.util.HibernateConfigUtils;
 			/**
              * Creates new form mainFrame
              */
-            public mainFrame() {
+            public MainFrame() {
                 initComponents();
             }
 
@@ -46,11 +45,9 @@ import com.xgs.zwy.util.HibernateConfigUtils;
 
                 tabbedPane1 = new javax.swing.JTabbedPane();
                 systemSettingPanel=new SystemSettingPanel();
-                cDheadList = new CDheadList();
-                cdEntryHeadPanel = new CDEntryHeadPanel();
-                tabbedPane1.addTab("舱单管理", cDheadList);
-                tabbedPane1.addTab("分单管理", cdEntryHeadPanel);
-                tabbedPane1.addTab("全局设置",systemSettingPanel );
+                transformPanel = new TransformPanel();
+                tabbedPane1.addTab("文件转换", transformPanel);
+//                tabbedPane1.addTab("全局设置",systemSettingPanel );
                 setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
                 showPanel();
                 javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -73,15 +70,14 @@ import com.xgs.zwy.util.HibernateConfigUtils;
                 pack();
             }// </editor-fold>
         	private  void showPanel(){
-    			SystemSettingService systemSettingService = new SystemSettingServiceImpl();
-    			SystemSetting systemSetting= systemSettingService.get(SystemSetting.ID);
-    			if(systemSetting==null){
-    				tabbedPane1.setSelectedComponent(systemSettingPanel);
-    			}else{
-    				ThreadLocalVariable.setSystemSetting(systemSetting);
-    				systemSettingPanel.initValue(systemSetting);
-    				tabbedPane1.setSelectedIndex(0);
-    			}
+//    			SystemSetting systemSetting= PropertiesUtil.getSystemSetting();
+//    			if(systemSetting==null){
+//    				tabbedPane1.setSelectedComponent(systemSettingPanel);
+//    			}else{
+//    				ThreadLocalVariable.setSystemSetting(systemSetting);
+//    				systemSettingPanel.initValue(systemSetting);
+//    				tabbedPane1.setSelectedIndex(0);
+//    			}
     			
     	}
             /**
@@ -101,20 +97,20 @@ import com.xgs.zwy.util.HibernateConfigUtils;
                         }
                     }
                 } catch (ClassNotFoundException ex) {
-                    java.util.logging.Logger.getLogger(mainFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+                    java.util.logging.Logger.getLogger(MainFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
                 } catch (InstantiationException ex) {
-                    java.util.logging.Logger.getLogger(mainFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+                    java.util.logging.Logger.getLogger(MainFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
                 } catch (IllegalAccessException ex) {
-                    java.util.logging.Logger.getLogger(mainFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+                    java.util.logging.Logger.getLogger(MainFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
                 } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-                    java.util.logging.Logger.getLogger(mainFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+                    java.util.logging.Logger.getLogger(MainFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
                 }
                 //</editor-fold>
 
                 JProgressBarTest jProgressBarTest = new JProgressBarTest();
         		jProgressBarTest.setVisible(true);
         		try {
-        			HibernateConfigUtils.initConfiguration();
+        			PropertiesUtil.initSystemSetting();
         		} catch (Exception e) {
         			e.printStackTrace();
         			int status = JOptionPane.showOptionDialog(null,"对不起系统启动错误！","确认提示",JOptionPane.YES_OPTION,JOptionPane.ERROR_MESSAGE,null,new String[]{" 确定 "},null);
@@ -128,7 +124,6 @@ import com.xgs.zwy.util.HibernateConfigUtils;
             // Variables declaration - do not modify
             private javax.swing.JTabbedPane tabbedPane1;
             private SystemSettingPanel systemSettingPanel;
-            private CDheadList cDheadList;
-            private CDEntryHeadPanel cdEntryHeadPanel;
+            private TransformPanel transformPanel;
             // End of variables declaration
         }

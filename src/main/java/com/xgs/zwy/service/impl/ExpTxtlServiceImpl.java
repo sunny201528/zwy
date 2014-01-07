@@ -7,16 +7,11 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.util.List;
 
-import com.xgs.zwy.dao.CDEntryHeadDao;
-import com.xgs.zwy.dao.CDHeadDao;
-import com.xgs.zwy.dao.impl.CDEntryHeadDaoImpl;
-import com.xgs.zwy.dao.impl.CDHeadDaoImpl;
 import com.xgs.zwy.domain.CDEntryHead;
 import com.xgs.zwy.domain.CDHead;
 import com.xgs.zwy.service.ExpTxtService;
 import com.xgs.zwy.util.ExcelUtils;
 import com.xgs.zwy.vo.CDEntryListVo;
-import com.xgs.zwy.vo.SystemSettingValidate;
 
 
 /**
@@ -27,7 +22,6 @@ import com.xgs.zwy.vo.SystemSettingValidate;
  */
 public  class ExpTxtlServiceImpl implements ExpTxtService {
 
-	private CDEntryHeadServiceImpl entryHeadService = new CDEntryHeadServiceImpl();
 	private static String DEFAULT_ENCODING = "GBK";
 	
 	@Override
@@ -56,25 +50,19 @@ public  class ExpTxtlServiceImpl implements ExpTxtService {
 			if(isImport){
 			createCdTxt(cdEntryHead, cdWriter);
 			}
-			CDEntryHead cdEntryHead_old = entryHeadService.findByAssBillNO(cdEntryHead.getAssBillNO());
-			if(cdEntryHead_old!=null){
-				if(isImport){
-					cdWriter.close();
-					new File(outPath+File.separator+cdHead.getBillNO()+"cd.txt").delete();
-				}
-				bgWriter.close();
-				bgFile.delete();
-				throw new  RuntimeException("分运单号："+cdEntryHead.getAssBillNO()+" 已经存在！请不要重复导入");
-			}
+			
 			createBgTxt(cdEntryHead, bgWriter);
-		}
-		for (CDEntryHead cdEntryHead : heads) {
-			entryHeadService.saveOrUpdate(cdEntryHead);
 		}
 		if(isImport){
 			cdWriter.close();
 		}
 		bgWriter.close();
+		if(heads==null || heads.size()==0){
+			if(isImport){
+				new File(outPath+File.separator+cdHead.getBillNO()+"cd.txt").delete();
+			}
+			bgFile.delete();
+		}
 	}
 
 	/** 创建报关单内容 
